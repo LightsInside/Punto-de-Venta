@@ -1,0 +1,293 @@
+<Window x:Class="ZarelyPOS.Views.ProductoFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:helpers="clr-namespace:ZarelyPOS.Helpers"
+        Title="Zarely POS — Producto"
+        Height="720" Width="900"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BrushBackground}">
+
+    <Window.Resources>
+        <helpers:RutaImagenConverter x:Key="RutaImagenConverter"/>
+    </Window.Resources>
+
+    <DockPanel>
+
+        <!-- HEADER -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushYellow}"
+                BorderThickness="0,0,0,3"
+                Padding="24,16">
+            <StackPanel>
+                <TextBlock x:Name="TxtTitulo"
+                           Text="Nuevo Producto"
+                           Style="{StaticResource TextHeading2}"/>
+                <TextBlock x:Name="TxtSubtitulo"
+                           Text="Captura los datos del producto, sube una imagen y define las tallas con stock."
+                           Style="{StaticResource TextMuted}"
+                           FontSize="12"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- FOOTER con botones -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="0,1,0,0"
+                Padding="24,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancelar"
+                        Style="{StaticResource ButtonOutline}"
+                        Width="120" Height="38" Margin="0,0,10,0"
+                        Click="BtnCancelar_Click"/>
+                <Button x:Name="BtnGuardar"
+                        Content="Guardar"
+                        Style="{StaticResource ButtonPrimary}"
+                        Width="160" Height="38"
+                        Click="BtnGuardar_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- CONTENIDO -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>  <!-- Imagen -->
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>    <!-- Formulario -->
+                </Grid.ColumnDefinitions>
+
+                <!-- ─── COLUMNA IZQUIERDA: IMAGEN ─── -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Imagen del producto"
+                               Style="{StaticResource LabelForm}"/>
+
+                    <Border Width="260" Height="260"
+                            BorderBrush="{StaticResource BrushBorder}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Background="White"
+                            Margin="0,0,0,10">
+                        <Grid>
+                            <!-- Imagen real (visible si hay ruta) -->
+                            <Image x:Name="ImgPreview"
+                                   Stretch="Uniform"
+                                   Margin="8"/>
+                            <!-- Placeholder (visible si no hay ruta) -->
+                            <StackPanel x:Name="PanelSinImagen"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="📷" FontSize="48"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource BrushMuted}"/>
+                                <TextBlock Text="Sin imagen"
+                                           Style="{StaticResource TextMuted}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Content="Seleccionar..."
+                                Style="{StaticResource ButtonOutline}"
+                                Height="36"
+                                Click="BtnSeleccionarImagen_Click"/>
+                        <Button Grid.Column="2"
+                                x:Name="BtnQuitarImagen"
+                                Content="Quitar"
+                                Style="{StaticResource ButtonOutline}"
+                                Height="36"
+                                IsEnabled="False"
+                                Click="BtnQuitarImagen_Click"/>
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource TextMuted}" FontSize="11" Margin="0,8,0,0"
+                               TextWrapping="Wrap"
+                               Text="Formatos: JPG, PNG. Recomendado: imagen cuadrada (1:1)."/>
+                </StackPanel>
+
+                <!-- ─── COLUMNA DERECHA: FORMULARIO ─── -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Fila 1: Nombre y Marca -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Nombre del producto *" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FNombre" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Marca" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FMarca" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Fila 2: Modelo y Color -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Modelo" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FModelo" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Color" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FColor" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Fila 3: Categoria y Proveedor -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Categoria" Style="{StaticResource LabelForm}"/>
+                            <ComboBox x:Name="FCategoria" FontSize="13" Padding="8,6" Height="34"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Proveedor" Style="{StaticResource LabelForm}"/>
+                            <ComboBox x:Name="FProveedor" FontSize="13" Padding="8,6" Height="34"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Fila 4: Precio, Costo y Punto reorden -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Precio venta *" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FPrecio" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Costo unitario" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FCostoUnitario" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Punto de reorden" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FPuntoReorden" Style="{StaticResource InputBase}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Estado -->
+                    <Grid Margin="0,0,0,18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Estado" Style="{StaticResource LabelForm}"/>
+                            <ComboBox x:Name="FEstado" FontSize="13" Padding="8,6" Height="34">
+                                <ComboBoxItem Content="Activo" IsSelected="True"/>
+                                <ComboBoxItem Content="Inactivo"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- ═══ TALLAS ═══ -->
+                    <Border Background="{StaticResource BrushCard}"
+                            BorderBrush="{StaticResource BrushBorder}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="14">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Tallas e inventario"
+                                               FontFamily="Segoe UI" FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource BrushPrimary}"/>
+                                    <TextBlock Text="Agrega cada talla disponible con su stock actual."
+                                               Style="{StaticResource TextMuted}" FontSize="11"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Total: " Style="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtStockTotal" Text="0"
+                                               FontFamily="Segoe UI" FontSize="14"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource BrushPrimary}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Lista de tallas -->
+                            <ItemsControl x:Name="ListaTallas">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Talla:"
+                                                       VerticalAlignment="Center" Margin="0,0,6,0"
+                                                       Foreground="{StaticResource BrushMuted}" FontSize="12"/>
+                                            <TextBox Grid.Column="1"
+                                                     Text="{Binding Talla, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource InputBase}"/>
+                                            <TextBlock Grid.Column="3" Text="Stock:"
+                                                       VerticalAlignment="Center" Margin="0,0,6,0"
+                                                       Foreground="{StaticResource BrushMuted}" FontSize="12"/>
+                                            <TextBox Grid.Column="4"
+                                                     Text="{Binding StockActual, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource InputBase}"
+                                                     TextChanged="StockTalla_Changed"/>
+                                            <Button Grid.Column="6"
+                                                    Content="✕"
+                                                    Style="{StaticResource ButtonIcon}"
+                                                    ToolTip="Quitar esta talla"
+                                                    Click="BtnQuitarTalla_Click"
+                                                    Tag="{Binding}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Content="+ Agregar talla"
+                                    Style="{StaticResource ButtonOutline}"
+                                    HorizontalAlignment="Left"
+                                    Padding="12,6"
+                                    Margin="0,8,0,0"
+                                    Click="BtnAgregarTalla_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

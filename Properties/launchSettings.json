@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ZarelyPOS": {
+      "commandName": "Project",
+      "sqlDebugging": true,
+      "nativeDebugging": true
+    }
+  }
+}

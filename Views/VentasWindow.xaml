@@ -1,0 +1,339 @@
+<Window x:Class="ZarelyPOS.Views.VentasWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Zarely POS — Ventas"
+        Height="720" Width="1180"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource BrushBackground}">
+
+    <!-- Grid raiz: capa 0 = UI principal, capa 1 = overlay de cobro -->
+    <Grid>
+
+        <!-- ════════════════ CAPA 0: UI PRINCIPAL ════════════════ -->
+        <DockPanel>
+
+            <!-- ═══ HEADER ═══ -->
+            <Border DockPanel.Dock="Top"
+                    Background="{StaticResource BrushCard}"
+                    BorderBrush="{StaticResource BrushYellow}"
+                    BorderThickness="0,0,0,3"
+                    Padding="24,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="/Resources/Images/logo.png" Height="34" Stretch="Uniform"
+                               VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text=" | " Foreground="{StaticResource BrushMuted}"
+                                   FontSize="18" VerticalAlignment="Center" Margin="8,0"/>
+                        <TextBlock Text="Punto de venta" Style="{StaticResource TextHeading2}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center">
+                        <Border Background="{StaticResource BrushAccent}" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
+                            <TextBlock x:Name="TxtUsuarioHeader" Style="{StaticResource TextMuted}"/>
+                        </Border>
+                        <Button Content="Regresar" Style="{StaticResource ButtonOutline}"
+                                Padding="12,6" Click="BtnRegresar_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ═══ PANEL DERECHO: CARRITO ═══ -->
+            <Border DockPanel.Dock="Right"
+                    Width="430"
+                    Background="{StaticResource BrushCard}"
+                    BorderBrush="{StaticResource BrushBorder}"
+                    BorderThickness="1,0,0,0"
+                    Padding="20">
+                <DockPanel>
+
+                    <!-- Titulo + conteo -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,14">
+                        <TextBlock Text="🛒 Carrito" Style="{StaticResource TextHeading2}" VerticalAlignment="Center"/>
+                        <Border Background="{StaticResource BrushAccent}" CornerRadius="12"
+                                Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtConteoCarrito" Text="0" FontSize="12"
+                                       Foreground="{StaticResource BrushMuted}"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Cliente -->
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                        <TextBlock Text="Cliente" Style="{StaticResource LabelForm}"/>
+                        <ComboBox x:Name="CmbCliente" Height="34" FontSize="13"
+                                  DisplayMemberPath="Display"/>
+                    </StackPanel>
+
+                    <!-- Totales + botones (abajo) -->
+                    <Border DockPanel.Dock="Bottom" Margin="0,14,0,0"
+                            BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,1,0,0"
+                            Padding="0,14,0,0">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Articulos" Style="{StaticResource TextMuted}"/>
+                                <TextBlock x:Name="TxtTotalArticulos" Grid.Column="1" Text="0"
+                                           Style="{StaticResource TextMuted}"/>
+                            </Grid>
+                            <!-- Subtotal -->
+                            <Grid Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Subtotal" Style="{StaticResource TextMuted}"/>
+                                <TextBlock x:Name="TxtSubtotal" Grid.Column="1" Text="$0.00"
+                                           Style="{StaticResource TextMuted}"/>
+                            </Grid>
+
+                            <!-- Descuento (%) -->
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Descuento" Style="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="FDescuento" Width="58" Height="30" Margin="8,0,4,0"
+                                             Text="0" VerticalContentAlignment="Center" TextAlignment="Right"
+                                             TextChanged="FDescuento_TextChanged"/>
+                                    <TextBlock Text="%" Style="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock x:Name="TxtDescuentoMonto" Grid.Column="1" Text="$0.00"
+                                           Foreground="{StaticResource BrushDestructive}" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid Margin="0,8,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Total" FontFamily="Segoe UI" FontSize="18"
+                                           FontWeight="Bold" Foreground="{StaticResource BrushPrimary}"/>
+                                <TextBlock x:Name="TxtTotal" Grid.Column="1" Text="$0.00"
+                                           FontFamily="Segoe UI" FontSize="22" FontWeight="Bold"
+                                           Foreground="{StaticResource BrushPrimary}"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="Vaciar"
+                                        Style="{StaticResource ButtonOutline}"
+                                        Height="42" Padding="18,0"
+                                        Click="BtnVaciar_Click"/>
+                                <Button Grid.Column="2" x:Name="BtnCobrar" Content="Cobrar"
+                                        Style="{StaticResource ButtonPrimary}"
+                                        Height="42" FontSize="15"
+                                        Click="BtnCobrar_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Lista del carrito -->
+                    <DataGrid x:Name="GridCarrito"
+                              Style="{StaticResource DataGridBase}"
+                              ColumnHeaderStyle="{StaticResource DataGridColumnHeader}"
+                              CellStyle="{StaticResource DataGridCell}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Producto" Binding="{Binding ProductoNombre}" Width="*"/>
+                            <DataGridTextColumn Header="Talla"    Binding="{Binding Talla}" Width="50"/>
+                            <DataGridTextColumn Header="Cant"     Binding="{Binding Cantidad}" Width="45"/>
+                            <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat=C2}" Width="85"/>
+                            <DataGridTemplateColumn Width="36">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource ButtonIcon}" ToolTip="Quitar"
+                                                Click="BtnQuitarItem_Click" Tag="{Binding}">
+                                            <TextBlock Text="&#x2715;" FontSize="12"
+                                                       Foreground="{StaticResource BrushDestructive}"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </DockPanel>
+            </Border>
+
+            <!-- ═══ CENTRO: SELECCION DE PRODUCTO ═══ -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="28,24" MaxWidth="560" HorizontalAlignment="Left">
+
+                    <TextBlock Text="Agregar producto al carrito"
+                               Style="{StaticResource TextHeading2}" Margin="0,0,0,16"/>
+
+                    <!-- Buscar -->
+                    <TextBlock Text="Buscar producto" Style="{StaticResource LabelForm}"/>
+                    <Border BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="6"
+                            Background="White" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🔍" Grid.Column="0" VerticalAlignment="Center"
+                                       Margin="10,0,0,0" Foreground="{StaticResource BrushMuted}"/>
+                            <TextBox x:Name="TxtBuscarProducto" Grid.Column="1" BorderThickness="0"
+                                     FontSize="13" Padding="8,8" Background="Transparent"
+                                     VerticalAlignment="Center"
+                                     TextChanged="TxtBuscarProducto_TextChanged"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Sugerencias en vivo (resultados debajo del buscador) -->
+                    <ListBox x:Name="LstSugerencias" Visibility="Collapsed"
+                             MaxHeight="220" Margin="0,0,0,12" FontSize="13"
+                             DisplayMemberPath="Display"
+                             BorderBrush="{StaticResource BrushBorder}" BorderThickness="1"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             SelectionChanged="LstSugerencias_SelectionChanged"/>
+
+                    <!-- Producto seleccionado -->
+                    <TextBlock Text="Producto seleccionado *" Style="{StaticResource LabelForm}"/>
+                    <Border Background="{StaticResource BrushAccent}" CornerRadius="6"
+                            Padding="12,10" Margin="0,0,0,12">
+                        <TextBlock x:Name="TxtProductoSeleccionado" Text="Ninguno"
+                                   FontSize="13" TextWrapping="Wrap"
+                                   Foreground="{StaticResource BrushPrimary}"/>
+                    </Border>
+
+                    <!-- Talla + Cantidad + Precio -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Talla *" Style="{StaticResource LabelForm}"/>
+                            <ComboBox x:Name="CmbTalla" Height="36" FontSize="13"
+                                      DisplayMemberPath="Display"
+                                      SelectionChanged="CmbTalla_SelectionChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Width="90">
+                            <TextBlock Text="Cantidad *" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FCantidad" Style="{StaticResource InputBase}"
+                                     Text="1" TextChanged="Recalcular_Changed"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4" Width="120">
+                            <TextBlock Text="Precio unit. *" Style="{StaticResource LabelForm}"/>
+                            <TextBox x:Name="FPrecio" Style="{StaticResource InputBase}"
+                                     TextChanged="Recalcular_Changed"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Hint de stock -->
+                    <TextBlock x:Name="TxtStockHint" Style="{StaticResource TextMuted}"
+                               FontSize="12" Margin="0,0,0,4" Text=""/>
+
+                    <!-- Error de stock -->
+                    <Border x:Name="PanelStockError" Background="#FEF3C7"
+                            BorderBrush="{StaticResource BrushWarning}" BorderThickness="1"
+                            CornerRadius="6" Padding="12,8" Margin="0,4,0,12"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="TxtStockError" Foreground="#92400E"
+                                   FontSize="12" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Agregar -->
+                    <Button x:Name="BtnAgregar" Content="+ Agregar al carrito"
+                            Style="{StaticResource ButtonPrimary}"
+                            Height="42" HorizontalAlignment="Left" Padding="22,0"
+                            Margin="0,8,0,0"
+                            Click="BtnAgregar_Click"/>
+
+                </StackPanel>
+            </ScrollViewer>
+
+        </DockPanel>
+
+        <!-- ════════════════ CAPA 1: OVERLAY DE COBRO ════════════════ -->
+        <Border x:Name="OverlayCobro"
+                Background="#88000000"
+                Visibility="Collapsed">
+            <Border Style="{StaticResource Card}"
+                    Width="420" Padding="28"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="Cobrar venta" Style="{StaticResource TextHeading2}" Margin="0,0,0,16"/>
+
+                    <!-- Total a pagar -->
+                    <Border Background="{StaticResource BrushAccent}" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Total a pagar" VerticalAlignment="Center"
+                                       FontFamily="Segoe UI" FontSize="14" FontWeight="Medium"
+                                       Foreground="{StaticResource BrushPrimary}"/>
+                            <TextBlock x:Name="TxtCobroTotal" Grid.Column="1" Text="$0.00"
+                                       FontFamily="Segoe UI" FontSize="24" FontWeight="Bold"
+                                       Foreground="{StaticResource BrushPrimary}"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Metodo de pago -->
+                    <TextBlock Text="Metodo de pago" Style="{StaticResource LabelForm}"/>
+                    <ComboBox x:Name="CmbMetodoPago" Height="36" FontSize="13" Margin="0,0,0,14"
+                              SelectionChanged="CmbMetodoPago_SelectionChanged">
+                        <ComboBoxItem Content="Efectivo" IsSelected="True"/>
+                        <ComboBoxItem Content="Tarjeta"/>
+                    </ComboBox>
+
+                    <!-- Efectivo: dinero recibido + cambio -->
+                    <StackPanel x:Name="PanelEfectivo">
+                        <TextBlock Text="Dinero recibido" Style="{StaticResource LabelForm}"/>
+                        <TextBox x:Name="FDineroRecibido" Style="{StaticResource InputBase}"
+                                 Margin="0,0,0,12" TextChanged="FDineroRecibido_TextChanged"/>
+
+                        <Border Background="#DCFCE7" CornerRadius="6" Padding="12,8" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Cambio" VerticalAlignment="Center"
+                                           FontWeight="Medium" Foreground="#166534"/>
+                                <TextBlock x:Name="TxtCambio" Grid.Column="1" Text="$0.00"
+                                           FontFamily="Segoe UI" FontSize="16" FontWeight="Bold"
+                                           Foreground="#166534"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Botones -->
+                    <Grid Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="Cancelar"
+                                Style="{StaticResource ButtonOutline}" Height="42"
+                                Click="BtnCancelarCobro_Click"/>
+                        <Button Grid.Column="2" x:Name="BtnConfirmarCobro" Content="Confirmar venta"
+                                Style="{StaticResource ButtonPrimary}" Height="42"
+                                Click="BtnConfirmarCobro_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Border>
+
+    </Grid>
+</Window>

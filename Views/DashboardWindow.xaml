@@ -1,0 +1,112 @@
+<Window x:Class="ZarelyPOS.Views.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Zarely POS — Panel Principal"
+        Height="600" Width="950"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BrushBackground}">
+    <DockPanel>
+
+        <!-- HEADER -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushYellow}"
+                BorderThickness="0,0,0,3"
+                Padding="24,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
+                    <Image Source="/Resources/Images/logo.png" Height="34" Stretch="Uniform"
+                           VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Text=" | " Foreground="{StaticResource BrushMuted}"
+                               FontSize="18" VerticalAlignment="Center" Margin="8,0"/>
+                    <TextBlock Text="Panel Principal" Style="{StaticResource TextHeading2}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center">
+                    <!-- Pildora con el usuario actual -->
+                    <Border Background="{StaticResource BrushAccent}"
+                            CornerRadius="6"
+                            Padding="10,6"
+                            Margin="0,0,10,0">
+                        <TextBlock x:Name="TxtUsuario"
+                                   Style="{StaticResource TextMuted}"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <Button Content="Cambiar contrasena"
+                            Style="{StaticResource ButtonOutline}"
+                            Padding="12,6"
+                            Margin="0,0,8,0"
+                            Click="BtnCambiarPassword_Click"/>
+
+                    <!-- NUEVO: cambiar de cuenta -->
+                    <Button Content="Cambiar de cuenta"
+                            Style="{StaticResource ButtonOutline}"
+                            Padding="12,6"
+                            Margin="0,0,8,0"
+                            ToolTip="Cerrar la sesion actual e iniciar con otro usuario"
+                            Click="BtnCambiarCuenta_Click"/>
+
+                    <Button Content="Cerrar Sesion"
+                            Style="{StaticResource ButtonOutline}"
+                            Padding="12,6"
+                            Click="BtnCerrarSesion_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CONTENIDO -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="32,24">
+                <TextBlock x:Name="TxtBienvenida"
+                           Style="{StaticResource TextHeading1}"
+                           Margin="0,0,0,4"/>
+                <TextBlock x:Name="TxtSubtitulo"
+                           Text="Selecciona un modulo para comenzar"
+                           Style="{StaticResource TextMuted}"
+                           Margin="0,0,0,28"/>
+
+                <!-- Grid de modulos -->
+                <ItemsControl x:Name="ListModulos">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Width="220" Height="130"
+                                    Margin="0,0,16,16"
+                                    HorizontalContentAlignment="Left"
+                                    VerticalContentAlignment="Top"
+                                    Style="{StaticResource ButtonOutline}"
+                                    Background="{StaticResource BrushCard}"
+                                    Tag="{Binding Ruta}"
+                                    Click="ModuloBtn_Click">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Icono}" FontSize="28" Margin="0,0,0,8"/>
+                                    <TextBlock Text="{Binding Titulo}"
+                                               FontFamily="Segoe UI"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource BrushPrimary}"/>
+                                    <TextBlock Text="{Binding Descripcion}"
+                                               Style="{StaticResource TextMuted}"
+                                               FontSize="12"
+                                               TextWrapping="Wrap"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
